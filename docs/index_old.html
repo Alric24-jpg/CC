@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#FFFDD3">
+  <meta name="description" content="Share files temporarily with a transfer code and a four-digit PIN. Files expire automatically.">
+  <!-- When deploying, replace the example API host below with your exact HTTPS tunnel hostname. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' http://127.0.0.1:8000 http://localhost:8000  https://accurately-cutting-ssl-omissions.trycloudflare.com ; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">  <title>TempDrop — temporary file transfer</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <header class="topbar shell">
+    <a class="brand" href="./" aria-label="TempDrop home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none"><path d="M16 3.5 27 9.8v12.4L16 28.5 5 22.2V9.8L16 3.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M16 9v13M9.8 12.5 16 16l6.2-3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span>temp<span class="brand-light">drop</span><span class="brand-period">.</span></span>
+    </a>
+    <div class="topbar-meta"><span class="status-dot"></span> Temporary by design</div>
+  </header>
+
+  <main class="shell main-layout">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="eyebrow"><span class="eyebrow-line"></span> PRIVATE FILE HANDOFF</div>
+      <h1 id="page-title">Your files.<br><span>Gone in four hours.</span></h1>
+      <p class="hero-copy">A simple way to pass files from one person to another. Upload, share a transfer code and PIN, and let TempDrop take care of the cleanup.</p>
+      <div class="feature-row" aria-label="Transfer limits and protections">
+        <div class="feature"><span class="feature-icon" aria-hidden="true">↥</span><span><strong>100 MB</strong><small>per transfer</small></span></div>
+        <div class="feature-divider"></div>
+        <div class="feature"><span class="feature-icon clock-icon" aria-hidden="true">◷</span><span><strong>4 hours</strong><small>then deleted</small></span></div>
+        <div class="feature-divider"></div>
+        <div class="feature"><span class="feature-icon shield-icon" aria-hidden="true">◇</span><span><strong>AES-256</strong><small>encrypted storage</small></span></div>
+      </div>
+    </section>
+
+    <section class="transfer-card" aria-label="File transfer">
+      <div class="card-heading">
+        <div>
+          <p class="section-kicker">GET STARTED</p>
+          <h2>What would you like to do?</h2>
+        </div>
+        <span class="secure-label"><span aria-hidden="true">●</span> PIN protected</span>
+      </div>
+
+      <div class="mode-tabs" role="tablist" aria-label="Transfer action">
+        <button class="mode-tab active" id="send-tab" type="button" role="tab" aria-selected="true" aria-controls="send-panel" data-mode="send"><span aria-hidden="true">↑</span> Send files</button>
+        <button class="mode-tab" id="receive-tab" type="button" role="tab" aria-selected="false" aria-controls="receive-panel" data-mode="receive"><span aria-hidden="true">↓</span> Receive files</button>
+      </div>
+
+      <section id="send-panel" class="mode-panel" role="tabpanel" aria-labelledby="send-tab">
+        <form id="upload-form">
+          <label class="dropzone" id="dropzone" for="file-input">
+            <span class="upload-symbol" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v3A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <strong>Drop files here or <span>browse</span></strong>
+            <small>Up to 100 MB · 20 files max · selected executable/script types blocked</small>
+            <input id="file-input" name="files" type="file" multiple>
+          </label>
+          <div id="file-list-wrap" class="file-list-wrap hidden">
+            <div class="file-list-heading"><span id="file-count-label">Selected files</span><span id="file-total-label">0 B / 100 MB</span></div>
+            <ul id="file-list" class="file-list"></ul>
+          </div>
+          <div class="size-meter" aria-hidden="true"><span id="size-meter-fill"></span></div>
+          <p id="upload-error" class="inline-message error-message hidden" role="alert"></p>
+          <button class="primary-button" id="upload-button" type="submit" disabled><span>Upload and create PIN</span><span aria-hidden="true">↗</span></button>
+          <p class="microcopy"><span aria-hidden="true">⌁</span> Your PIN is shown once. Save it before closing this page.</p>
+        </form>
+        <section id="upload-result" class="result-panel hidden" aria-live="polite">
+          <div class="result-top"><span class="success-mark" aria-hidden="true">✓</span><div><p class="section-kicker">TRANSFER READY</p><h3>Your files are ready to share</h3></div></div>
+          <p class="result-copy">Send the transfer code and PIN to the recipient separately when possible.</p>
+          <div class="credential-row"><div><span class="credential-label">TRANSFER CODE</span><strong id="result-code" class="transfer-code">—</strong></div><button type="button" class="copy-button" data-copy="code" aria-label="Copy transfer code">Copy</button></div>
+          <div class="credential-row"><div><span class="credential-label">4-DIGIT PIN</span><strong id="result-pin" class="transfer-pin">—</strong></div><button type="button" class="copy-button" data-copy="pin" aria-label="Copy PIN">Copy</button></div>
+          <div class="expiry-row"><span class="expiry-icon" aria-hidden="true">◷</span><div><span class="credential-label">AUTOMATIC DELETION</span><strong id="expiry-countdown">4:00:00 remaining</strong></div></div>
+          <button type="button" class="secondary-button" id="new-transfer-button">Create another transfer</button>
+        </section>
+      </section>
+
+      <section id="receive-panel" class="mode-panel hidden" role="tabpanel" aria-labelledby="receive-tab">
+        <div class="receive-intro"><div class="receive-icon" aria-hidden="true">↓</div><div><h3>Retrieve a transfer</h3><p>Enter the transfer code and its four-digit PIN.</p></div></div>
+        <form id="download-form" class="download-form">
+          <label for="transfer-code-input">Transfer code</label>
+          <input id="transfer-code-input" name="transfer-code" type="text" maxlength="12" minlength="12" placeholder="e.g. 7K9M4R8T2W6X" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+          <div class="pin-label-row"><label for="pin-input">4-digit PIN</label><span>Numbers only</span></div>
+          <input id="pin-input" name="pin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" minlength="4" placeholder="••••" autocomplete="off" required>
+          <p id="download-error" class="inline-message error-message hidden" role="alert"></p>
+          <button class="primary-button" id="download-button" type="submit"><span>Verify and download ZIP</span><span aria-hidden="true">↓</span></button>
+        </form>
+        <p class="microcopy"><span aria-hidden="true">◇</span> Files are bundled into a ZIP and downloaded as an attachment.</p>
+      </section>
+
+      <div class="card-footer"><span class="footer-lock" aria-hidden="true">▣</span> No account required <span class="footer-dot">·</span> Temporary storage <span class="footer-dot">·</span> Auto-expiring</div>
+    </section>
+  </main>
+
+  <footer class="shell site-footer">
+    <span>TempDrop <span class="footer-year">/</span> temporary file transfer</span>
+    <span class="footer-note">Only share files with people you trust.</span>
+  </footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
